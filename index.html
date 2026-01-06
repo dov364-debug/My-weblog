@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Personal Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --bg-main: #f7f7f8;
+      --bg-sidebar: #ffffff;
+      --bg-content: #ffffff;
+      --border-color: #e5e7eb;
+      --text-main: #111827;
+      --text-sub: #6b7280;
+      --accent: #10a37f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar {
+      width: 280px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #ddd;
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nickname {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .email {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .post-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .post-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    .post-item:hover {
+      background: #f3f4f6;
+    }
+
+    .post-item.active {
+      background: #e6f6f1;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ---------- Content ---------- */
+    .content {
+      flex: 1;
+      background: var(--bg-content);
+      overflow-y: auto;
+      padding: 40px;
+    }
+
+    .article {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .article h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin-bottom: 30px;
+    }
+
+    .article p {
+      line-height: 1.8;
+      margin-bottom: 18px;
+      font-size: 16px;
+    }
+
+    .article h2 {
+      margin-top: 36px;
+      margin-bottom: 12px;
+      font-size: 22px;
+    }
+
+    .article code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="profile">
+      <img class="avatar" src="https://avatars.githubusercontent.com/u/1?v=4" alt="avatar">
+      <div class="profile-info">
+        <div class="nickname">Your Name</div>
+        <div class="email">your@email.com</div>
+      </div>
+    </div>
+
+    <div class="post-list" id="postList">
+      <div class="post-item active" onclick="loadPost(0)">欢迎</div>
+      <div class="post-item" onclick="loadPost(1)">第一篇文章</div>
+      <div class="post-item" onclick="loadPost(2)">技术笔记</div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+    <div class="article" id="article">
+      <!-- 动态注入 -->
+    </div>
+  </main>
+
+  <script>
+    const posts = [
+      {
+        title: "欢迎来到我的博客",
+        date: "2026-01-06",
+        content: `
+          <p>这是一个轻量化的个人博客示例页面。</p>
+          <p>页面采用左右分栏结构，左侧用于导航与个人信息展示，右侧用于阅读文章内容。</p>
+          <p>你可以将它直接部署在 Cloudflare Pages，用作展示、记录和长期维护。</p>
+        `
+      },
+      {
+        title: "第一篇文章",
+        date: "2026-01-05",
+        content: `
+          <p>这是你的第一篇正式博客文章。</p>
+          <p>你可以在 <code>posts</code> 数组中添加新的文章对象。</p>
+          <p>左侧目录会自动作为文章入口。</p>
+        `
+      },
+      {
+        title: "技术笔记",
+        date: "2026-01-04",
+        content: `
+          <p>这里适合记录技术总结、研究思路或阶段性笔记。</p>
+          <h2>示例小节</h2>
+          <p>保持页面结构稳定，后续可以无缝迁移到真正的博客系统。</p>
+        `
+      }
+    ];
+
+    function loadPost(index) {
+      const article = document.getElementById("article");
+      const post = posts[index];
+
+      article.innerHTML = `
+        <h1>${post.title}</h1>
+        <div class="article-meta">${post.date}</div>
+        ${post.content}
+      `;
+
+      document.querySelectorAll(".post-item").forEach((item, i) => {
+        item.classList.toggle("active", i === index);
+      });
+    }
+
+    // 初始加载
+    loadPost(0);
+  </script>
+
+</body>
+</html>
